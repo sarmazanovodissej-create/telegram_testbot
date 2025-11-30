@@ -4,8 +4,11 @@ import asyncio
 from config import BOT_TOKEN
 from handlers import register_handlers
 from scheduler import start_scheduler
+from db import init_db
 
 async def main():
+    print("Инициализируем базу данных") 
+    await init_db()
 
     start_scheduler()
     print("Фоновые задачи запущены...")
@@ -17,5 +20,5 @@ async def main():
     print("Бот запущен...")
     await dp.start_polling(bot)
 
-if __name__ == "__main__":
+if __name__ == "main":
     asyncio.run(main())

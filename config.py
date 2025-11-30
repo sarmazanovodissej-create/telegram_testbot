@@ -8,7 +8,7 @@ BOT_TOKEN = os.getenv("TG_API_KEY")
 TIME_INTERVAL = 10
 
 DECREASE_PARAMS = {
-    "hunger": -5,
+    "hunger": -3,
     "energy": -3,
     "happiness": -1,
 }
