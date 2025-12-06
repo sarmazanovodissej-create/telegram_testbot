@@ -24,6 +24,7 @@ async def register_handlers(dp: Dispatcher):
     dp.message.register(status_pet, F.text == BTN_STATUS)
     dp.message.register(sleep_pet, F.text == BTN_SLEEP)
     dp.callback_query.register(food_callback_handler, lambda c: c.data.startswith("feed_"))
+    dp.callback_query.register(play_callback_handler, lambda c: c.data.startswith("play_"))
 
 async def start_handler(message: types.Message):
     user_id = message.from_user.id
@@ -34,7 +35,7 @@ async def start_handler(message: types.Message):
 
     await message.answer(
         f"Привет, {message.from_user.first_name}\n"
-        f"Познакомся со своим питомцем: {pet["name"]}\n"
+        f"Познакомся со своим питомцем: {pet['name']}\n"
         f"Позаботься о нём!",
         reply_markup=main_kb
     )
@@ -42,45 +43,32 @@ async def start_handler(message: types.Message):
 async def feed_pet(message: types.Message):
     user_id = message.from_user.id
     pet = await get_pet(user_id)
-    if user_id not in pet:
+    if not pet:
         await message.answer("Сначала запусти бота с помощью команды /start")
         return
-    pet["hunger"] = min(pet["hunger"] + 10, 100)
-    pet["energy"] = max(pet["energy"] - 5, 0)
-
-    await update_pet(
-        user_id = user_id,
-        name = pet["name"],
-        hunger = pet["hunger"],
-        happiness = pet["happiness"],
-        energy = pet["energy"]
+    await message.answer(
+        f"Чем вы хотите покормить {pet['name']}?",
+        reply_markup=food_kb
     )
-    await message.answer(f"{pet['name']} слопал пол холодильника!")
 
 async def play_pet(message: types.Message):
     user_id = message.from_user.id
     pet = await get_pet(user_id)
-    if user_id not in pet:
+    if not pet:
         await message.answer("Сначала запусти бота с помощью команды /start")
         return
-    pet["happiness"] = min(pet["happiness"] + 10, 100)
-    pet["energy"] = max(pet["energy"] - 15, 0)
-
-    await update_pet(
-        user_id = user_id,
-        name = pet["name"],
-        hunger = pet["hunger"],
-        happiness = pet["happiness"],
-        energy = pet["energy"]
+    await message.answer(
+        f"Чем вы хотите позаниматься с {pet['name']}?",
+        reply_markup=play_kb
     )
-    await message.answer(f"{pet['name']} классно поиграл!")
 
 async def status_pet(message: types.Message):
     user_id = message.from_user.id
     pet = await get_pet(user_id)
-    if user_id not in pet:
+    if not pet:
         await message.answer("Сначала запусти бота с помощью команды /start")
         return
+    
     hun = pet['hunger']
     en = pet['energy']
     hap = pet['happiness']
@@ -91,6 +79,7 @@ async def status_pet(message: types.Message):
         f"Энергия: {en}% {progres_bar(en, 10)}\n"
         f"Счастье: {hap}% {progres_bar(hap, 10)}\n"
     )
+
     await update_pet(
         user_id = user_id,
         name = pet["name"],
@@ -103,7 +92,7 @@ async def status_pet(message: types.Message):
 async def sleep_pet(message: types.Message):
     user_id = message.from_user.id
     pet = await get_pet(user_id)
-    if user_id not in pet:
+    if not pet:
         await message.answer("Сначала запусти бота с помощью команды /start")
         return
     pet["happiness"] = min(pet["happiness"] + 10, 100)
@@ -122,14 +111,16 @@ async def sleep_pet(message: types.Message):
 async def food_callback_handler(callback: types.CallbackQuery):
     user_id = callback.from_user.id
     pet = await get_pet(user_id)
-    if user_id not in pet:
+    if not pet:
         await message.answer("Сначала запусти бота с помощью команды /start")
         return
+    
     food = callback.data
     message = ""
+    hun = pet["hunger"]
 
     if food == "feed_shawarma":
-        hun = pet["hunger"] + 20
+        hun = pet["hunger"] + 15
         message = f"Вы покормили {pet['name']} вкусной шавухой!"
 
     elif food == "feed_steak":
@@ -158,7 +149,7 @@ async def food_callback_handler(callback: types.CallbackQuery):
 async def play_callback_handler(callback: types.CallbackQuery):
     user_id = callback.from_user.id
     pet = await get_pet(user_id)
-    if user_id not in pet:
+    if not pet:
         await message.answer("Сначала запусти бота с помощью команды /start")
         return
     play = callback.data
