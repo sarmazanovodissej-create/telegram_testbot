@@ -79,14 +79,6 @@ async def status_pet(message: types.Message):
         f"Энергия: {en}% {progres_bar(en, 10)}\n"
         f"Счастье: {hap}% {progres_bar(hap, 10)}\n"
     )
-
-    await update_pet(
-        user_id = user_id,
-        name = pet["name"],
-        hunger = pet["hunger"],
-        happiness = pet["happiness"],
-        energy = pet["energy"]
-    )
     await message.answer(status)
 
 async def sleep_pet(message: types.Message):
