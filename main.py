@@ -6,6 +6,7 @@ from handlers import register_handlers
 from scheduler import start_scheduler
 from db import init_db
 
+
 async def main():
     print("Инициализируем базу данных") 
     await init_db()

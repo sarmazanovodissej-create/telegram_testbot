@@ -1,6 +1,7 @@
 from config import DB_NAME
 import aiosqlite
 
+
 async def init_db():
     async with aiosqlite.connect(DB_NAME) as db:
         await db.execute(
@@ -17,6 +18,7 @@ async def init_db():
         )
         await db.commit()
 
+
 async def create_pet(user_id: int, pet_name: str):
      async with aiosqlite.connect(DB_NAME) as db:
         await db.execute(
@@ -24,9 +26,10 @@ async def create_pet(user_id: int, pet_name: str):
             INSERT INTO pets (user_id, name, hunger, happiness, energy, training)
             VALUES (?,?,?,?,?,?)
             """,
-            (user_id, pet_name, 50, 50, 50, 0)
+            (user_id, pet_name, 50, 50, 50, 50)
         )
         await db.commit()
+
 
 async def get_pet(user_id: int):
     async with aiosqlite.connect(DB_NAME) as db:
@@ -44,11 +47,12 @@ async def get_pet(user_id: int):
                 "training": pet[5]
             }
 
+
 async def get_pets_list():
      async with aiosqlite.connect(DB_NAME) as db:
         async with db.execute("SELECT * FROM pets") as cursor:
             pets = await cursor.fetchall()
-            if not pets:
+            if pets is None:
                 return None
             pets_list = []
             for pet in pets:
@@ -62,6 +66,8 @@ async def get_pets_list():
                     "training": pet[5]
                     }
                 )
+            return pets_list
+
 
 async def update_pet(
     user_id,
@@ -73,8 +79,8 @@ async def update_pet(
 ):
     async with aiosqlite.connect(DB_NAME) as db:
         await db.execute("""
-        UPDATE pets SET name=?, hunger=?, happiness=?, energy=?, training=? WHERE user_id=?
-        """,
-        (name, hunger, happiness, energy, user_id, training)
+            UPDATE pets SET name=?, hunger=?, happiness=?, energy=?, training=? WHERE user_id=?
+            """,
+            (name, hunger, happiness, energy, user_id, training)
         )
         await db.commit()
