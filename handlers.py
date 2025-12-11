@@ -97,8 +97,8 @@ async def sleep_pet(message: types.Message):
         await message.answer("Сначала запусти бота с помощью команды /start")
         return
     pet["happiness"] = min(pet["happiness"] + 10, 100)
-    pet["hunger"] = min(pet["hunger"] - 5, 100)
-    pet["energy"] = max(pet["energy"] + 15, 0)
+    pet["hunger"] = max(pet["hunger"] - 5, 100)
+    pet["energy"] = min(pet["energy"] + 15, 0)
 
     await update_pet(
         user_id = user_id,
@@ -115,7 +115,9 @@ async def food_callback_handler(callback: types.CallbackQuery):
     user_id = callback.from_user.id
     pet = await get_pet(user_id)
     if not pet:
-        await message.answer("Сначала запусти бота с помощью команды /start")
+        await callback.answer(
+            "Сначала запусти бота с помощью команды /start", show_alert=True
+        )
         return
     
     food = callback.data
@@ -144,7 +146,7 @@ async def food_callback_handler(callback: types.CallbackQuery):
 
     pet["happiness"] = min(100, hap)
     pet["hunger"] = min(100, hun)
-    pet["energy"] = min(100, en)
+    pet["energy"] = max(100, en)
 
     await update_pet(
         user_id = user_id,
@@ -169,7 +171,9 @@ async def play_callback_handler(callback: types.CallbackQuery):
     user_id = callback.from_user.id
     pet = await get_pet(user_id)
     if not pet:
-        await message.answer("Сначала запусти бота с помощью команды /start")
+        await callback.answer(
+            "Сначала запусти бота с помощью команды /start", show_alert=True
+        )
         return
     
     play = callback.data
@@ -178,26 +182,26 @@ async def play_callback_handler(callback: types.CallbackQuery):
     en = pet["energy"]
     tr = pet["training"]
 
-    if play == "throw_the_ball":
+    if play == "play_throw_the_ball":
         hap = pet["happiness"] + 15
         en = pet["energy"] - 5
         tr = pet["training"] + 10
         message = f"Вы кинули мяч, {pet['name']} бежит за ним!"
 
-    elif play == "paddock":
+    elif play == "play_paddock":
         hap = pet["happiness"] + 20
         en = pet["energy"] - 10
         tr = pet["training"] + 5
         message = f"Вы выгуливаете {pet['name']}!"
 
-    elif play == "workout":
+    elif play == "play_workout":
         hap = pet["happiness"] + 10
         en = pet["energy"] - 15
         tr = pet["training"] + 20
         message = f"{pet['name']} немного подкачался!"
 
     pet["happiness"] = min(100, hap)
-    pet["energy"] = min(100, en)
+    pet["energy"] = max(100, en)
     pet["training"] = min(100, tr)
 
     await update_pet(

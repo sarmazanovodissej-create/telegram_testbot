@@ -12,4 +12,5 @@ DECREASE_PARAMS = {
     "hunger": -3,
     "energy": -3,
     "happiness": -1,
+    "training": -1
 }

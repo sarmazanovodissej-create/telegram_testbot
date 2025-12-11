@@ -34,12 +34,12 @@ food_kb = types.InlineKeyboardMarkup(
 play_kb = types.InlineKeyboardMarkup(
     inline_keyboard= [
         [
-            types.InlineKeyboardButton(text="🥎Покидать мяч", callback_data="throw_the_ball"),
-            types.InlineKeyboardButton(text="🌳Выгул", callback_data="paddock")
+            types.InlineKeyboardButton(text="🥎Покидать мяч", callback_data="play_throw_the_ball"),
+            types.InlineKeyboardButton(text="🌳Выгул", callback_data="play_paddock")
             ],
-            
+
         [
-            types.InlineKeyboardButton(text="🥋Тренировка", callback_data="workout")
+            types.InlineKeyboardButton(text="🥋Тренировка", callback_data="play_workout")
             ]
     ]
 )

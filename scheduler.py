@@ -28,10 +28,10 @@ async def decrease_params():
         hap = max(min(hap, 100), 0)
         tr = max(min(tr, 100), 0)
 
-        pet['hunger'] = hun
-        pet['energy'] = en
-        pet['happiness'] = hun
-        pet['training'] = tr
+        pet["hunger"] = hun
+        pet["energy"] = en
+        pet["happiness"] = hap
+        pet["training"] = tr
 
         # print(pet)
 

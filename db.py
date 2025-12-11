@@ -81,6 +81,6 @@ async def update_pet(
         await db.execute("""
             UPDATE pets SET name=?, hunger=?, happiness=?, energy=?, training=? WHERE user_id=?
             """,
-            (name, hunger, happiness, energy, user_id, training)
+            (name, hunger, happiness, energy, training, user_id)
         )
         await db.commit()
